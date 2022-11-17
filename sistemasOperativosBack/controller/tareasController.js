@@ -33,7 +33,7 @@ const getTareas = async(req = request,res= response)=>{
     
     let info = JSON.parse(fs.readFileSync(`./database/${categoria}.json`,{encoding: 'utf-8'}))
     
-    info = info.slice(1,cantidad+1)
+    info = info.slice(1,parseInt(cantidad) + 1)
     //console.log(info);
     return res.json({
         info

@@ -1,14 +1,11 @@
 <template>
   <div class="overflow-x-auto relative shadow-md">
     <table
-      class="
-        w-full
-        text-sm text-left text-gray-500
-        dark:text-gray-400
-        border-spacing-2 border-separate
-      "
+      class="w-full text-sm text-left text-gray-500 dark:text-gray-400 border-spacing-2 border-separate"
     >
-      <thead class="text-md text-gray-700 uppercase dark:text-gray-400 text-center">
+      <thead
+        class="text-md text-gray-700 uppercase dark:text-gray-400 text-center"
+      >
         <tr>
           <th class="py-3 px-6 bg-gray-50 dark:bg-gray-800">PID</th>
           <th class="py-3 px-6 dark:bg-gray-800">Nombre</th>
@@ -17,11 +14,15 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="proceso in procesos" :key="proceso.id" class="text-black font-semibold text-center uppercase">
-          <td class="py-4">{{proceso.Id[0]}}</td>
-          <td class="py-4">{{proceso.ProcessName[0]}}</td>
-          <td class="py-4">{{proceso.ProcessName[0]}}</td>
-          <td class="py-4">{{proceso["CPU(s)"][0]}}</td>
+        <tr
+          v-for="proceso in procesos"
+          :key="proceso.id"
+          class="text-black font-semibold text-center uppercase"
+        >
+          <td class="py-4">{{ proceso.Id[0] }}</td>
+          <td class="py-4">{{ proceso.ProcessName[0] }}</td>
+          <td class="py-4">{{ proceso.ProcessName[0] }}</td>
+          <td class="py-4">{{ proceso["CPU(s)"][0] }}</td>
         </tr>
       </tbody>
     </table>
@@ -29,28 +30,29 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 
-export default{
+export default {
   data: () => {
     return {
       procesos: [],
-    }
+    };
   },
-  methods:{
+  methods: {
     getProcesos() {
       axios({
         method: "get",
-        url: "http://localhost:3600/getProcesos?cantidad=1&atributo=CPU(s)&categoria=descendente",
-      }).then((response) => {
+        url: "http://localhost:3600/getProcesos?cantidad=5&atributo=CPU(s)&categoria=descendente",
+      })
+        .then((response) => {
           console.log(response);
           this.procesos = response.data.info;
         })
         .catch((e) => console.log(e));
     },
   },
-  mounted(){
+  mounted() {
     this.getProcesos();
-  }
-  }
+  },
+};
 </script>

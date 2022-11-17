@@ -1,19 +1,21 @@
 <template>
-  <TableVue />
+  <!-- <TableVue /> -->
+  <Containers/>
+  
 </template>
 
 <script>
-import CardVue from '../components/Card.vue';
+import CardVue from "../components/Card.vue";
+import Containers from "../components/Containers.vue";
 import TableVue from "../components/Table.vue";
 import axios from "axios";
 
 export default {
   components: {
     TableVue,
+    Containers,
   },
-  methods: {
-    
-  },
+  methods: {},
   mounted() {
     axios({
       method: "post",
@@ -23,5 +25,3 @@ export default {
   },
 };
 </script>
-
-
