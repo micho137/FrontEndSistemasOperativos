@@ -17,11 +17,11 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="proceso in 5" :key="proceso.id" class="text-black font-semibold text-center uppercase">
-          <td class="py-4">{}</td>
-          <td class="py-4">{}</td>
-          <td class="py-4">{}</td>
-          <td class="py-4">{}</td>
+        <tr v-for="proceso in procesos" :key="proceso.id" class="text-black font-semibold text-center uppercase">
+          <td class="py-4">{{proceso.Id[0]}}</td>
+          <td class="py-4">{{proceso.ProcessName[0]}}</td>
+          <td class="py-4">{{proceso.ProcessName[0]}}</td>
+          <td class="py-4">{{proceso["CPU(s)"][0]}}</td>
         </tr>
       </tbody>
     </table>
@@ -29,11 +29,28 @@
 </template>
 
 <script>
+import axios from 'axios';
 
 export default{
   data: () => {
     return {
-      //procesos: null,
+      procesos: [],
     }
-  }}
+  },
+  methods:{
+    getProcesos() {
+      axios({
+        method: "get",
+        url: "http://localhost:3600/getProcesos?cantidad=1&atributo=CPU(s)&categoria=descendente",
+      }).then((response) => {
+          console.log(response);
+          this.procesos = response.data.info;
+        })
+        .catch((e) => console.log(e));
+    },
+  },
+  mounted(){
+    this.getProcesos();
+  }
+  }
 </script>
