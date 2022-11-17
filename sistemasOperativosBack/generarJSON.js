@@ -33,12 +33,8 @@ const SortByAsc = async (atributo) => {
  infoJson = infoJson.sort((a,b)=>{
    return parseFloat(a[`${atributo}`][0])-parseFloat(b[`${atributo}`][0])
   });
-  console.log(infoJson);
- fs.writeFile("./database/Ascendente.json", JSON.stringify(infoJson), (err) => {
-  if (err) {
-      console.log(err);
-  }
-}); 
+  
+ await fs.promises.writeFile("./database/ascendente.json", JSON.stringify(infoJson)); 
 }
 const SortByDesc = async (atributo) => {
 
@@ -53,18 +49,14 @@ const SortByDesc = async (atributo) => {
      return p
   })
   infoJson = infoJson.sort((a,b)=>{
-    return parseFloat(a[`${atributo}`][0])-parseFloat(b[`${atributo}`][0])
+    return parseFloat(b[`${atributo}`][0])-parseFloat(a[`${atributo}`][0])
    });
-   console.log(infoJson);
-  fs.writeFile("./database/desendente.json", JSON.stringify(infoJson), (err) => {
-   if (err) {
-       console.log(err);
-   }
- }); 
+   //console.log(infoJson);
+   await fs.promises.writeFile("./database/descendente.json", JSON.stringify(infoJson)); 
  }
-const llamado = async(atributo)=>{
-  await crearPrimerJson();
-  await SortByAsc(atributo);
-  await SortByDesc(atributo);
+
+module.exports={
+  crearPrimerJson,
+  SortByAsc,
+  SortByDesc
 }
-llamado('CPU(s)');

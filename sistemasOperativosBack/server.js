@@ -1,7 +1,7 @@
 const express = require('express');
 require('dotenv').config();
 const cors = require('cors');
-
+const routesTareas = require('./routes/archivo.routes');
 class server{
     constructor(){
         this.app = express();
@@ -20,7 +20,7 @@ class server{
    
 
     middlewares(){
-        this.app.use(express.static('public'))
+        
         this.app.use(cors());//cors
         this.app.use(express.json());
         
@@ -28,7 +28,7 @@ class server{
 
     routes(){
         
-        //this.app.use(routesUsuario);
+       this.app.use(routesTareas);
     }
 
     listen(){
