@@ -24,11 +24,11 @@ export default {
   },
   methods: {},
   async mounted()  {
-   /*  await axios({
+   /*   await axios({
       method: "post",
       url: "http://localhost:3600/crearDocumento",
       data: {},
-    }); */
+    });  */
   },
 };
 </script>

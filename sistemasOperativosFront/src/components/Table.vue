@@ -42,7 +42,7 @@ export default {
     async getProcesos() {
       await axios({
         method: "get",
-        url: "http://localhost:3600/getProcesos?cantidad=5&atributo=CPU(s)&categoria=descendente",
+        url: "http://localhost:3600/getProcesos?cantidad=20&atributo=CPU(s)&categoria=descendente",
       })
         .then((response) => {
           console.log(response);
@@ -51,8 +51,13 @@ export default {
         .catch((e) => console.log(e));
     },
   },
-  mounted() {
-    this.getProcesos();
+  async mounted() {
+  /*   await axios({
+      method: "post",
+      url: "http://localhost:3600/crearDocumento",
+      data: {},
+    }); 
+    this.getProcesos(); */
   },
 };
 </script>

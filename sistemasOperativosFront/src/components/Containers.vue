@@ -4,19 +4,7 @@
       <div class="flex flex-col justify-center items-center">
         <label class="uppercase text-white font-semibold m-2">En espera</label>
         <div
-          class="
-            w-80
-            max-h-96
-            bg-gray-800
-            p-4
-            rounded
-            ring ring-gray-900
-            flex flex-col
-            justify-start
-            items-start
-            text-white
-            overflow-y-scroll overflow-x-hidden
-          "
+          class="w-80 max-h-96 bg-gray-800 p-4 rounded ring ring-gray-900 flex flex-col justify-start items-start text-white overflow-y-scroll overflow-x-hidden"
         >
           <div class="" v-for="(proceso, index) in enEspera" :key="index">
             <CardVue
@@ -29,49 +17,25 @@
       </div>
 
       <div class="flex flex-col justify-center items-center">
-        <label class="uppercase text-white font-semibold m-2"
-          >En Ejecucion</label
-        >
+        <label class="uppercase text-white font-semibold m-2">En Ejecucion</label>
         <div
-          class="
-            w-80
-            max-h-96
-            bg-gray-800
-            p-4
-            rounded
-            ring ring-gray-900
-            flex flex-col
-            justify-start
-            items-start
-            text-white
-            overflow-y-scroll overflow-x-hidden
-          "
+          class="w-80 max-h-96 bg-gray-800 p-4 rounded ring ring-gray-900 flex flex-col justify-start items-start text-white overflow-y-scroll overflow-x-hidden"
         >
           <div class="" v-for="(proceso, index) in EnEjecucion" :key="index">
             <CardVue
-              :Descripcion="proceso.ProcessName[0]"
+              :Descripcion="proceso.desc"
               :NombreDelProceso="proceso.ProcessName[0]"
               :Tiempo="proceso['CPU(s)'][0]"
             />
           </div>
+          
         </div>
+       <!--  <p class="text-white">Ejecutado: {{Ejecutado}}</P> -->
       </div>
       <div class="flex flex-col justify-center items-center">
         <label class="uppercase text-white font-semibold m-2">terminado</label>
         <div
-          class="
-            w-80
-            max-h-96
-            bg-gray-800
-            p-4
-            rounded
-            ring ring-gray-900
-            flex flex-col
-            justify-start
-            items-start
-            text-white
-            overflow-y-scroll overflow-x-hidden
-          "
+          class="w-80 max-h-96 bg-gray-800 p-4 rounded ring ring-gray-900 flex flex-col justify-start items-start text-white overflow-y-scroll overflow-x-hidden"
         >
           <div class="" v-for="(proceso, index) in Terminados" :key="index">
             <CardVue
@@ -85,17 +49,7 @@
     </div>
     <div class="pb-2">
       <button
-        class="
-          bg-gray-800
-          text-gray-400
-          uppercase
-          font-bold
-          text-sm
-          px-4
-          py-2
-          rounded-md
-          border-2 border-double border-white
-        "
+        class="bg-gray-800 text-gray-400 uppercase font-bold text-sm px-4 py-2 rounded-md border-2 border-double border-white"
         v-on:click="Procesar()"
       >
         Iniciar
@@ -116,9 +70,9 @@ export default {
   setup() {
     const processStore = useProcessStore();
     let { Terminados } = storeToRefs(processStore);
-    const { EnEjecucion } = storeToRefs(processStore);
+    const { EnEjecucion, Ejecutado } = storeToRefs(processStore);
     //Terminados = JSON.parse(JSON.stringify(Terminados));
-    return { processStore, EnEjecucion, Terminados };
+    return { processStore, EnEjecucion, Terminados, Ejecutado};
   },
   components: {
     CardVue,
@@ -136,8 +90,8 @@ export default {
       sleep(milis);
     },
 
-    async function(qu, procesos, th) {
-      RoundRobin(qu, procesos, th);
+    async function(qu,  th) {
+      RoundRobin(qu,  th);
     },
 
     /*  async increment() {
@@ -165,14 +119,15 @@ export default {
       this.processStore.pushExec(this.enEspera);
       this.enEspera = [];
       await sleep(1000);
-      await RoundRobin(2, 10);
+      await RoundRobin(4, 20);
       this.refresh();
     },
 
     async getProcesos() {
       await axios({
         method: "get",
-        url: "http://localhost:3600/getProcesos?cantidad=15&atributo=CPU(s)&categoria=descendente",
+        url:
+          "http://localhost:3600/getProcesos?cantidad=10&atributo=CPU(s)&categoria=ascendente",
       })
         .then((response) => {
           console.log(response);
@@ -181,7 +136,12 @@ export default {
         .catch((e) => console.log(e));
     },
   },
-  mounted() {
+  async mounted() {
+    await axios({
+      method: "post",
+      url: "http://localhost:3600/crearDocumento",
+      data: {},
+    });
     this.getProcesos();
   },
 };
