@@ -5,11 +5,12 @@ var fs = require('fs');
 const crearPrimerJson =async()=>{
     const data = await new Promise((resolve, reject) => {
       
-      exec("Get-Process  ",{'shell':'powershell.exe'} ,async(error, data) => {
+      exec("Get-Process",{'shell':'powershell.exe'} ,async(error, data) => {
           resolve(data)
       })
     })
-    
+
+    console.log(data);  
     
     table = Parser.parse(await data);
   
@@ -39,7 +40,9 @@ const SortByAsc = async (atributo) => {
 const SortByDesc = async (atributo) => {
 
   const info = fs.readFileSync('./database/json.json',{encoding: 'utf-8'})
+  
   let infoJson = JSON.parse(info);
+  console.log(infoJson[0]);
   infoJson = infoJson.map((p)=>{
     if(p[`${atributo}`][0]===''){
       p[`${atributo}`][0]='0'

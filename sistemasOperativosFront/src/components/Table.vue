@@ -39,8 +39,8 @@ export default {
     };
   },
   methods: {
-    getProcesos() {
-      axios({
+    async getProcesos() {
+      await axios({
         method: "get",
         url: "http://localhost:3600/getProcesos?cantidad=5&atributo=CPU(s)&categoria=descendente",
       })

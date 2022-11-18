@@ -1,7 +1,13 @@
 <template>
-  <!-- <TableVue /> -->
-  <Containers/>
-  
+  <!-- <Containers/> -->
+
+  <!-- <CardVue :Descripcion="'Karlotos'" :NombreDelProceso="'Karlotos'" :Tiempo="1" />
+    <CardVue :Descripcion="'Karlotos'" :NombreDelProceso="'Karlotos'" :Tiempo="1" />
+    <CardVue :Descripcion="'Karlotos'" :NombreDelProceso="'Karlotos'" :Tiempo="1" /> -->
+  <div>
+    <Containers/>
+    <TableVue />
+  </div>
 </template>
 
 <script>
@@ -14,14 +20,15 @@ export default {
   components: {
     TableVue,
     Containers,
+    CardVue,
   },
   methods: {},
-  mounted() {
-    axios({
+  async mounted()  {
+   /*  await axios({
       method: "post",
       url: "http://localhost:3600/crearDocumento",
       data: {},
-    });
+    }); */
   },
 };
 </script>
