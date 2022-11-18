@@ -1,5 +1,5 @@
 <template>
-  <div class="w-52 rounded overflow-hidden shadow-lg">
+  <div class="w-auto rounded overflow-hidden ">
     <!--   <div class="px-6 py-4"> -->
     <div>
       <div class="font-bold text-xl mb-2 gap-x-10 flex">

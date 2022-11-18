@@ -4,9 +4,9 @@
   <!-- <CardVue :Descripcion="'Karlotos'" :NombreDelProceso="'Karlotos'" :Tiempo="1" />
     <CardVue :Descripcion="'Karlotos'" :NombreDelProceso="'Karlotos'" :Tiempo="1" />
     <CardVue :Descripcion="'Karlotos'" :NombreDelProceso="'Karlotos'" :Tiempo="1" /> -->
-  <div>
-    <Containers/>
-    <TableVue />
+  <div class="h-screen">
+    <Containers class="h-1/2"/>
+    <TableVue class="h-1/2" />
   </div>
 </template>
 

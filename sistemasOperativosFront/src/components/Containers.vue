@@ -1,47 +1,106 @@
 <template>
-  <div>
-    <div class="flex w-full bg-slate-600 h-72 justify-around items-center">
-      <div
-        class="w-20 h-fit bg-red-600 flex flex-col justify-center items-center text-white"
-      >
-        <p>En espera</p>
-        <div class="bg-indigo-800" v-for="(proceso, index) in enEspera" :key="index">
-          <CardVue
-            :Descripcion="proceso.ProcessName[0]"
-            :NombreDelProceso="proceso.ProcessName[0]"
-            :Tiempo="proceso['CPU(s)'][0]"
-          />
+  <div class="bg-slate-600 flex justify-center items-center flex-col h-screen">
+    <div class="flex w-full h-full justify-around items-center">
+      <div class="flex flex-col justify-center items-center">
+        <label class="uppercase text-white font-semibold m-2">En espera</label>
+        <div
+          class="
+            w-80
+            max-h-96
+            bg-gray-800
+            p-4
+            rounded
+            ring ring-gray-900
+            flex flex-col
+            justify-start
+            items-start
+            text-white
+            overflow-y-scroll overflow-x-hidden
+          "
+        >
+          <div class="" v-for="(proceso, index) in enEspera" :key="index">
+            <CardVue
+              :Descripcion="proceso.ProcessName[0]"
+              :NombreDelProceso="proceso.ProcessName[0]"
+              :Tiempo="proceso['CPU(s)'][0]"
+            />
+          </div>
         </div>
       </div>
-      <div
-        class="w-20 h-20 bg-red-600 flex flex-col justify-center items-center text-white"
-      >
-        <p>En Ejecucion</p>
-        <div class="bg-indigo-800" v-for="(proceso, index) in EnEjecucion" :key="index">
-          <CardVue
-            :Descripcion="proceso.ProcessName[0]"
-            :NombreDelProceso="proceso.ProcessName[0]"
-            :Tiempo="proceso['CPU(s)'][0]"
-          />
+
+      <div class="flex flex-col justify-center items-center">
+        <label class="uppercase text-white font-semibold m-2"
+          >En Ejecucion</label
+        >
+        <div
+          class="
+            w-80
+            max-h-96
+            bg-gray-800
+            p-4
+            rounded
+            ring ring-gray-900
+            flex flex-col
+            justify-start
+            items-start
+            text-white
+            overflow-y-scroll overflow-x-hidden
+          "
+        >
+          <div class="" v-for="(proceso, index) in EnEjecucion" :key="index">
+            <CardVue
+              :Descripcion="proceso.ProcessName[0]"
+              :NombreDelProceso="proceso.ProcessName[0]"
+              :Tiempo="proceso['CPU(s)'][0]"
+            />
+          </div>
         </div>
       </div>
-      <div
-        class="w-auto h-52 bg-red-600 flex flex-col justify-center items-center text-white overflow-y-auto"
-      >
-        <p>Terminado</p>
-        <div class="bg-indigo-800" v-for="(proceso, index) in Terminados" :key="index">
-        
-            
-          <CardVue
-            :Descripcion="proceso[0].ProcessName[0]"
-            :NombreDelProceso="proceso[0].ProcessName[0]"
-            :Tiempo="proceso[0]['CPU(s)'][0]"
-          />
+      <div class="flex flex-col justify-center items-center">
+        <label class="uppercase text-white font-semibold m-2">terminado</label>
+        <div
+          class="
+            w-80
+            max-h-96
+            bg-gray-800
+            p-4
+            rounded
+            ring ring-gray-900
+            flex flex-col
+            justify-start
+            items-start
+            text-white
+            overflow-y-scroll overflow-x-hidden
+          "
+        >
+          <div class="" v-for="(proceso, index) in Terminados" :key="index">
+            <CardVue
+              :Descripcion="proceso[0].ProcessName[0]"
+              :NombreDelProceso="proceso[0].ProcessName[0]"
+              :Tiempo="proceso[0]['CPU(s)'][0]"
+            />
+          </div>
         </div>
       </div>
     </div>
-
-    <button v-on:click="Procesar()">Pa ve</button>
+    <div class="pb-2">
+      <button
+        class="
+          bg-gray-800
+          text-gray-400
+          uppercase
+          font-bold
+          text-sm
+          px-4
+          py-2
+          rounded-md
+          border-2 border-double border-white
+        "
+        v-on:click="Procesar()"
+      >
+        Iniciar
+      </button>
+    </div>
   </div>
 </template>
 
@@ -53,12 +112,11 @@ import axios from "axios";
 import { storeToRefs } from "pinia";
 import { useProcessStore } from "../stores/process.store";
 
-
 export default {
   setup() {
     const processStore = useProcessStore();
     let { Terminados } = storeToRefs(processStore);
-    const {EnEjecucion} = storeToRefs(processStore);
+    const { EnEjecucion } = storeToRefs(processStore);
     //Terminados = JSON.parse(JSON.stringify(Terminados));
     return { processStore, EnEjecucion, Terminados };
   },
@@ -97,9 +155,9 @@ export default {
         await sleep(1000);
       }
     }, */
-    refresh(){
-        this.term = JSON.parse(JSON.stringify(this.processStore.Terminados));
-        console.log(this.term);
+    refresh() {
+      this.term = JSON.parse(JSON.stringify(this.processStore.Terminados));
+      console.log(this.term);
     },
 
     async Procesar() {
@@ -114,8 +172,7 @@ export default {
     async getProcesos() {
       await axios({
         method: "get",
-        url:
-          "http://localhost:3600/getProcesos?cantidad=15&atributo=CPU(s)&categoria=descendente",
+        url: "http://localhost:3600/getProcesos?cantidad=15&atributo=CPU(s)&categoria=descendente",
       })
         .then((response) => {
           console.log(response);
