@@ -173,7 +173,7 @@ export default {
     async getProcesos() {
       await axios({
         method: "get",
-        url: "http://localhost:3600/getProcesos?cantidad=10&atributo=CPU(s)&categoria=ascendente",
+        url: `http://localhost:3600/getProcesos?cantidad=10&atributo=CPU(s)&categoria=ascendente`,
       })
         .then((response) => {
           console.log(response);

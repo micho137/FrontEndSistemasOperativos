@@ -9,8 +9,7 @@
       bg-slate-600
     "
   >
-    <Form
-      @submit="onSubmit()"
+    <form
       class="
         w-full
         max-w-sm
@@ -46,7 +45,7 @@
           type="text"
           placeholder="Ingrese el numero de procesos"
         /> -->
-        <Field
+        <input
           class="
             appearance-none
             bg-transparent
@@ -63,9 +62,10 @@
             focus:outline-none
           "
           name="text"
-          type="text"
-          :rules="validateEmail"
+          type="number"
+          min="1"
           placeholder="Ingrese el numero de procesos"
+          v-model="Numero"
         />
         <ErrorMessage name="text" />
       </div>
@@ -90,11 +90,15 @@
             leading-tight
             focus:outline-none focus:shadow-outline
           "
+          v-model="Orden"
         >
-          <option>Ordenar Por:</option>
-          <option>Nombre</option>
-          <option>CPU</option>
-          <option>PID</option>
+          <option selected disabled>Ordenar Por:</option>
+          <option>Nombre(A-Z)</option>
+          <option>Nombre(Z-A)</option>
+          <option>CPU(Mayor uso)</option>
+          <option>CPU(Menor uso)</option>
+          <option>PID(Mayor a menor)</option>
+          <option>PID(Menor a mayor)</option>
         </select>
         <div
           class="
@@ -119,41 +123,53 @@
           </svg>
         </div>
       </div>
-      <div>
-        <button
-          class="
-            flex-shrink-0
-            bg-slate-800
-            hover:bg-gray-700
-            border-slate-800
-            hover:border-gray-700
-            text-sm
-            border-4
-            text-white
-            py-1
-            px-2
-            rounded
-            uppercase
-            font-bold
-          "
-          type="button"
-          v-on:click="onSubmit()"
-        >
-          Aceptar
-        </button>
-      </div>
-    </Form>
+      <button
+        class="
+          flex-shrink-0
+          bg-slate-800
+          hover:bg-gray-700
+          border-slate-800
+          hover:border-gray-700
+          text-sm
+          border-4
+          text-white
+          py-1
+          px-2
+          rounded
+          uppercase
+          font-bold
+        "
+        type="button"
+        v-on:click="getProcesos()"
+      >
+        Aceptar
+      </button>
+    </form>
   </div>
 </template>
 
 <script>
-import { Form, Field, ErrorMessage } from "vee-validate";
+//import { Form, Field, ErrorMessage } from "vee-validate";
+import axios from 'axios';
 export default {
   methods: {
-    onSubmit(values) {
+    onSubmit() {
       console.log("Funciona");
     },
-    validateNumber(value) {
+    getProcesos() {
+      if (this.Orden == "Nombre(A-Z)" && !this.Numero == "") {
+        axios({
+          method: "get",
+          url: `http://localhost:3600/getProcesos?cantidad=${this.Numero}&atributo=ProcessName&categoria=ascendente`,
+        })
+          .then((response) => {
+            console.log(response);
+            this.enEspera = response.data.info;
+          })
+          .catch((e) => console.log(e));
+      }
+    },
+    /* validateNumber(value) {
       // if the field is empty
       if (!value) {
         return "Es necesario digitar un numero entero";
@@ -165,12 +181,12 @@ export default {
       }
       // All is good
       return true;
-    },
+    }, */
   },
-  components: {
+  /* components: {
     Form,
     Field,
     ErrorMessage
-  },
+  }, */
 };
 </script>
