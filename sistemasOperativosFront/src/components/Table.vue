@@ -15,7 +15,7 @@
       </thead>
       <tbody>
         <tr
-          v-for="proceso in procesos"
+          v-for="proceso in Procesos"
           :key="proceso.id"
           class="text-black font-semibold text-center uppercase"
         >
@@ -31,11 +31,22 @@
 
 <script>
 import axios from "axios";
+import { storeToRefs } from "pinia";
+import { useProcessStore } from "../stores/process.store";
 
 export default {
+  setup(){
+    const processStore = useProcessStore();
+    //let { Terminados } = storeToRefs(processStore);
+    let   {Procesos}  = storeToRefs(processStore);
+    //let  {getProcesos}  = processStore.getProcesos;
+    //Procesos = JSON.parse(JSON.stringify(Procesos));
+    console.log(Procesos);
+    return { Procesos};
+  },
   data: () => {
     return {
-      procesos: [],
+      process: [],
     };
   },
   methods: {

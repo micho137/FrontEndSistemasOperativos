@@ -1,6 +1,19 @@
 import { sleep } from "../scripts/sleepFunction.js";
 import { storeToRefs } from "pinia";
 import { useProcessStore } from "../stores/process.store";
+import axios from "axios";
+//import { fs } from "fs";
+
+async function writeOnFile(data) {
+  //await fs.promises.writeFile(path, data);
+  await axios({
+    method: "post",
+    url: "http://localhost:3600/crearFichero",
+    data: {
+      nombre: data,
+    },
+  });
+}
 
 const getTam = (list) => {
   return list.length;
@@ -9,8 +22,12 @@ const getTam = (list) => {
 const init = () => {
   const processStore = useProcessStore();
   //let {EnEjecucion}  = storeToRefs(processStore);
-  let EnEjecucion = processStore.EnEjecucion;
+  //let EnEjecucion = processStore.EnEjecucion;
+  let EnEjecucion = processStore.getEnEjecucion;
+  console.log(EnEjecucion);
   EnEjecucion = JSON.parse(JSON.stringify(EnEjecucion));
+  console.log(EnEjecucion);
+
 
   return {
     processStore,
@@ -45,7 +62,7 @@ async function RoundRobin2(qu, th) {
 
         store.processStore.setEjecutado(i, proc.desc);
 
-        //        await writeOnFile(`./${proc.nombre}.txt`, proc.text);
+        //      await writeOnFile(`./ficheros/${proc.ProcessName[0]}.txt`, proc.desc);
 
         /* if (proc.t == 0) break;
   
@@ -80,7 +97,7 @@ async function RoundRobin2(qu, th) {
 }
 
 async function RoundRobin(qu, th) {
-  //qu = 5;
+
   let ite = 1;
   const store = init();
   let i = 0;
@@ -89,14 +106,8 @@ async function RoundRobin(qu, th) {
 
     while (i < getTam(store.EnEjecucion)) {
       const proc = store.EnEjecucion[i];
-      //console.log(`inicio ${proc.nombre}, ${proc.t}`);
-
-      //console.log(getTam());
-
+      store.processStore.proceso = proc;
       for (let j = 0; j < qu; j++) {
-        //console.log(Object.keys(proc)[0]);
-        //proc.text += getChar( proc.text.length, proc.nombre);
-        //proc.text +=  proc.text.length>=proc.nombre.length ? '' : proc.nombre[proc.text.length] ;
         if (proc.desc == undefined) {
           Object.assign(proc, { desc: "" });
         }
@@ -106,40 +117,29 @@ async function RoundRobin(qu, th) {
             : proc.ProcessName[0][proc.desc.length];
 
         store.processStore.setEjecutado(i, proc.desc);
-
-        //        await writeOnFile(`./${proc.nombre}.txt`, proc.text);
-
-        /* if (proc.t == 0) break;
-  
-          proc.t = proc.t - 1;
-  
-          console.log(proc.t); */
-
+        //await writeOnFile(`./ficheros/${proc.ProcessName[0]}.txt`);
         await sleep(th * proc.ProcessName[0].length);
-        //await sleep(100);
       }
 
       console.log(proc.ProcessName[0].length - proc.desc.length);
 
-      //if (proc.t == 0) {
 
       if (proc.desc.length >= proc.ProcessName[0].length) {
         store.processStore.pushTerminados(i);
         store.EnEjecucion.splice(i, 1);
         console.log(store.processStore.Terminados);
-      }else{
+      } else {
         i++
       }
     }
 
-    if (getTam(store.EnEjecucion) == 0) break;
-    
-    i=0;
-    if(ite===20) break;
+    if (getTam(store.EnEjecucion) == 0) {
+      store.processStore.proceso = "";
+      break;
+    };
 
-    /* if (sumaDeRestantes() == 0) {
-        break;
-      } */
+    i = 0;
+    if (ite === 20) break;
     ite++;
   }
 }

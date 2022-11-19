@@ -34,14 +34,42 @@ const getTareas = async(req = request,res= response)=>{
     let info = JSON.parse(fs.readFileSync(`./database/${categoria}.json`,{encoding: 'utf-8'}))
     
     info = info.slice(1,parseInt(cantidad) + 1)
+
+     //info.forEach((element, index) => {
+      //  console.log(info[index+1]);
+        /* if(element.ProcessName[0] === info[index+1].ProcessName[0]){
+            info.splice(index+1,1);
+        } */
+    //});
+    
+    //console.log(noRepetidos);
+
+    //console.log(info[1]['ProcessName'][0]);
+    /* let procesosUnique = [];
+    for(let k=0; k<info.length;k++){
+        const elemento = info[k];
+        if(!procesosUnique.includes(info[k]['ProcessName'][0])){
+            delete info[k]
+        }
+    } */
     //console.log(info);
+    
     return res.json({
         info
     })
 }
 
+const escribir = async(req, res)=>{
+    const {nombre} = req.body
+
+   return new Promise((resolve, reject) => {
+    resolve(fs.promises.writeFile(`../database/fichero/${nombre}.txt`,nombre))   
+}) 
+}
+
 module.exports = {
     crearDocumento,
+    escribir,
     getTareas
 
 }

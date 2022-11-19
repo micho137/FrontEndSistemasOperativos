@@ -1,16 +1,13 @@
 <template>
-  <div
-    class="
+  <div class="
       flex flex-col
       justify-center
       items-center
       outline-none
       h-full
       bg-slate-600
-    "
-  >
-    <form
-      class="
+    ">
+    <form class="
         w-full
         max-w-sm
         shadow-lg
@@ -23,8 +20,7 @@
         gap-y-5
         justify-center
         items-center
-      "
-    >
+      ">
       <div class="flex items-center border-b border-slate-800 py-2 w-full">
         <!-- <input
           class="
@@ -45,8 +41,7 @@
           type="text"
           placeholder="Ingrese el numero de procesos"
         /> -->
-        <input
-          class="
+        <input class="
             appearance-none
             bg-transparent
             border-none
@@ -60,18 +55,11 @@
             px-2
             leading-tight
             focus:outline-none
-          "
-          name="text"
-          type="number"
-          min="1"
-          placeholder="Ingrese el numero de procesos"
-          v-model="Numero"
-        />
+          " name="text" type="number" min="1" placeholder="Ingrese el numero de procesos" v-model="Numero" />
         <ErrorMessage name="text" />
       </div>
       <div class="relative w-full">
-        <select
-          class="
+        <select class="
             block
             appearance-none
             text-center
@@ -89,19 +77,14 @@
             uppercase
             leading-tight
             focus:outline-none focus:shadow-outline
-          "
-          v-model="Orden"
-        >
+          " v-model="Orden">
           <option selected disabled>Ordenar Por:</option>
-          <option>Nombre(A-Z)</option>
-          <option>Nombre(Z-A)</option>
           <option>CPU(Mayor uso)</option>
           <option>CPU(Menor uso)</option>
           <option>PID(Mayor a menor)</option>
           <option>PID(Menor a mayor)</option>
         </select>
-        <div
-          class="
+        <div class="
             pointer-events-none
             absolute
             inset-y-0
@@ -110,21 +93,13 @@
             items-center
             px-2
             text-gray-700
-          "
-        >
-          <svg
-            class="fill-current h-4 w-4 text-white"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-          >
-            <path
-              d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
-            />
+          ">
+          <svg class="fill-current h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
           </svg>
         </div>
       </div>
-      <button
-        class="
+      <button class="
           flex-shrink-0
           bg-slate-800
           hover:bg-gray-700
@@ -138,10 +113,7 @@
           rounded
           uppercase
           font-bold
-        "
-        type="button"
-        v-on:click="getProcesos()"
-      >
+        " type="button" v-on:click="onSubmit( )">
         Aceptar
       </button>
     </form>
@@ -151,20 +123,60 @@
 <script>
 //import { Form, Field, ErrorMessage } from "vee-validate";
 import axios from 'axios';
+import { storeToRefs } from "pinia";
+import { useProcessStore } from "../stores/process.store";
+
 export default {
+  setup() {
+    let opciones = {
+      "CPU(Mayor uso)": ["CPU(s)", "descendente"],
+      "CPU(Menor uso)": ["CPU(s)", "ascendente"],
+      "PID(Mayor a menor)": ["Id", "descendente"],
+      "PID(Menor a mayor)": ["Id", "ascendente"]
+    };
+    const processStore = useProcessStore();
+    let { Terminados, EnEspera } = storeToRefs(processStore);
+    const { EnEjecucion } = storeToRefs(processStore);
+    return { opciones, processStore, EnEjecucion, Terminados, EnEspera };
+  },
+  data: () => {
+    return {
+      Orden: "CPU(Mayor uso)",
+      Numero: 0,
+
+    };
+  },
   methods: {
+
+
     onSubmit() {
       console.log("Funciona");
+      console.log(this.Numero);
+      console.log(this.Orden);
+      console.log(this.opciones[`${this.Orden}`][0]);
+      console.log(this.opciones[`${this.Orden}`][1]);
+      this.getProcesos();
     },
-    getProcesos() {
-      if (this.Orden == "Nombre(A-Z)" && !this.Numero == "") {
-        axios({
+    async getProcesos() {
+      /* if (this.Orden == "Nombre(A-Z)" && !this.Numero == "") { */
+      if (!this.Numero == "") {
+        await axios({
+          method: "post",
+          url: "http://localhost:3600/crearDocumento",
+          data: {},
+        });
+
+        await axios({
           method: "get",
-          url: `http://localhost:3600/getProcesos?cantidad=${this.Numero}&atributo=ProcessName&categoria=ascendente`,
+          url: `http://localhost:3600/getProcesos?cantidad=${this.Numero}&atributo=${this.opciones[`${this.Orden}`][0]}&categoria=${this.opciones[`${this.Orden}`][1]}`,
         })
           .then((response) => {
-            console.log(response);
-            this.enEspera = response.data.info;
+
+            this.processStore.pushEnEspera(response.data.info);
+            this.processStore.pushProcesos(response.data.info);
+
+            console.log(JSON.parse(JSON.stringify(this.EnEspera)));
+            console.log("Completed");
           })
           .catch((e) => console.log(e));
       }

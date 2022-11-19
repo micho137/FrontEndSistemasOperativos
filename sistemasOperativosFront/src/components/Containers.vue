@@ -3,8 +3,7 @@
     <div class="flex w-full h-full justify-around items-center">
       <div class="flex flex-col justify-center items-center">
         <label class="uppercase text-white font-semibold m-2">En espera</label>
-        <div
-          class="
+        <div class="
             w-80
             max-h-96
             bg-gray-800
@@ -16,24 +15,18 @@
             items-start
             text-white
             overflow-y-scroll overflow-x-hidden
-          "
-        >
-          <div class="" v-for="(proceso, index) in enEspera" :key="index">
-            <CardVue
-              :Descripcion="proceso.ProcessName[0]"
-              :NombreDelProceso="proceso.ProcessName[0]"
-              :Tiempo="proceso['CPU(s)'][0]"
-            />
+          ">
+          <div class="" v-for="(proceso, index) in EnEspera" :key="index">
+            <CardVue :Descripcion="proceso.ProcessName[0]" :NombreDelProceso="proceso.ProcessName[0]"
+              :Tiempo="proceso['CPU(s)'][0]" />
           </div>
         </div>
       </div>
 
       <div class="flex flex-col justify-center items-center">
-        <label class="uppercase text-white font-semibold m-2"
-          >En Ejecucion</label
-        >
-        <div
-          class="
+        <p class="uppercase text-white font-semibold m-2">Ejecutando: {{ proceso["ProcessName"][0] ?? "" }} </p>
+        <label class="uppercase text-white font-semibold m-2">En Ejecucion</label>
+        <div class="
             w-80
             max-h-96
             bg-gray-800
@@ -45,22 +38,20 @@
             items-start
             text-white
             overflow-y-scroll overflow-x-hidden
-          "
-        >
+          ">
+          <div>
+
+          </div>
           <div class="" v-for="(proceso, index) in EnEjecucion" :key="index">
-            <CardVue
-              :Descripcion="proceso.desc"
-              :NombreDelProceso="proceso.ProcessName[0]"
-              :Tiempo="proceso['CPU(s)'][0]"
-            />
+            <CardVue :Descripcion="proceso.desc" :NombreDelProceso="proceso.ProcessName[0]"
+              :Tiempo="proceso['CPU(s)'][0]" />
           </div>
         </div>
         <!--  <p class="text-white">Ejecutado: {{Ejecutado}}</P> -->
       </div>
       <div class="flex flex-col justify-center items-center">
         <label class="uppercase text-white font-semibold m-2">terminado</label>
-        <div
-          class="
+        <div class="
             w-80
             max-h-96
             bg-gray-800
@@ -72,21 +63,16 @@
             items-start
             text-white
             overflow-y-scroll overflow-x-hidden
-          "
-        >
+          ">
           <div class="" v-for="(proceso, index) in Terminados" :key="index">
-            <CardVue
-              :Descripcion="proceso[0].ProcessName[0]"
-              :NombreDelProceso="proceso[0].ProcessName[0]"
-              :Tiempo="proceso[0]['CPU(s)'][0]"
-            />
+            <CardVue :Descripcion="proceso[0].ProcessName[0]" :NombreDelProceso="proceso[0].ProcessName[0]"
+              :Tiempo="proceso[0]['CPU(s)'][0]" />
           </div>
         </div>
       </div>
     </div>
     <div class="pb-2">
-      <button
-        class="
+      <button class="
           bg-gray-800
           text-gray-400
           uppercase
@@ -96,9 +82,7 @@
           py-2
           rounded-md
           border-2 border-double border-white
-        "
-        v-on:click="Procesar()"
-      >
+        " v-on:click="Procesar()">
         Iniciar
       </button>
     </div>
@@ -117,16 +101,16 @@ export default {
   setup() {
     const processStore = useProcessStore();
     let { Terminados } = storeToRefs(processStore);
-    const { EnEjecucion, Ejecutado } = storeToRefs(processStore);
+    const { EnEjecucion, EnEspera, proceso } = storeToRefs(processStore);
     //Terminados = JSON.parse(JSON.stringify(Terminados));
-    return { processStore, EnEjecucion, Terminados, Ejecutado };
+    return { processStore, EnEjecucion, Terminados, EnEspera , proceso};
   },
   components: {
     CardVue,
   },
   data: () => {
     return {
-      enEspera: [],
+      //enEspera: [],
       term: null,
       //      EnEjecucion: [],
       //    Terminados: [],
@@ -163,10 +147,10 @@ export default {
 
     async Procesar() {
       //this.EnEjecucion = this.enEspera;
-      this.processStore.pushExec(this.enEspera);
-      this.enEspera = [];
+      this.processStore.pushExec(this.EnEspera);
+      this.processStore.pushEnEspera([]);
       await sleep(1000);
-      await RoundRobin(4, 20);
+      await RoundRobin(4, 100);
       this.refresh();
     },
 
@@ -183,12 +167,12 @@ export default {
     },
   },
   async mounted() {
-    await axios({
-      method: "post",
-      url: "http://localhost:3600/crearDocumento",
-      data: {},
-    });
-    this.getProcesos();
+    /*     await axios({
+          method: "post",
+          url: "http://localhost:3600/crearDocumento",
+          data: {},
+        });
+        this.getProcesos(); */
   },
 };
 </script>

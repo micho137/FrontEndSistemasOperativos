@@ -5,12 +5,12 @@ var fs = require('fs');
 const crearPrimerJson =async()=>{
     const data = await new Promise((resolve, reject) => {
       
-      exec("Get-Process",{'shell':'powershell.exe'} ,async(error, data) => {
+      exec("Get-Process ",{'shell':'powershell.exe'} ,async(error, data) => {
           resolve(data)
       })
     })
 
-    console.log(data);  
+
     
     table = Parser.parse(await data);
   
@@ -27,6 +27,8 @@ const SortByAsc = async (atributo) => {
    if(p[`${atributo}`][0]===''){
      p[`${atributo}`][0]='0'
     }
+    
+
     p[`${atributo}`][0]=p[`${atributo}`][0].replace(',','.');
     //console.log(p['CPU(s)'][0]);
     return p
